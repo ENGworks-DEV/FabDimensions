@@ -7,7 +7,7 @@ using Autodesk.Revit.DB;
 
 namespace FabParameters.Model
 {
-    class ElemSharedParameters
+    class ViewSharedParameters
     {
         //Get all the existing elements shared parameters in the view
         public static List<string> ElmSharedParam(List<Element> elems)

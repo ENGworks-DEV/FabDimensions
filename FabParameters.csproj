@@ -58,9 +58,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.cs" />
+    <Compile Include="Core\GetAllFabParam.cs" />
     <Compile Include="Core\SetParamByName.cs" />
-    <Compile Include="Model\ElemSharedParameters.cs" />
-    <Compile Include="Model\ParamValue.cs" />
+    <Compile Include="Model\FPartConnValue.cs" />
+    <Compile Include="Model\ViewSharedParameters.cs" />
+    <Compile Include="Model\FBDimensionsValue.cs" />
     <Compile Include="Model\ViewFParts.cs" />
     <Compile Include="Views\MainForm.xaml.cs">
       <DependentUpon>MainForm.xaml</DependentUpon>

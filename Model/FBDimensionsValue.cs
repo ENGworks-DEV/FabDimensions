@@ -1,14 +1,11 @@
-﻿using System;
+﻿
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Autodesk.Revit.DB;
-using Autodesk.Revit.UI;
+
 
 namespace FabParameters.Model
 {
-    class ParamValue
+    class FBDimensionsValue
     {
         public static List<string> FBDimensions (List<Element> fPartList)
         {

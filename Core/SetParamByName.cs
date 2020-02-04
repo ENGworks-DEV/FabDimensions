@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+using FabParameters.Model;
 
 namespace FabParameters.Core
 {
@@ -21,57 +22,77 @@ namespace FabParameters.Core
         }
 
 
-        private static void ParamFind(ref int counter, Document doc, 
+        private static void ParamFind(ref int counter, Document doc,
             List<Element> elems, string PParam, string sParam)
         {
-            using (Autodesk.Revit.DB.Transaction AssingParamNumber = 
+            using (Autodesk.Revit.DB.Transaction AssingParamNumber =
                 new Autodesk.Revit.DB.Transaction(doc, "Assing Part Number"))
             {
                 AssingParamNumber.Start();
 
+                string value;
+
+
+
                 for (var i = 0; i < elems.Count; i++)
                 {
-                    try
+                    Parameter sharParam = elems[i].LookupParameter(sParam);
+
+                    switch (PParam)
                     {
-                        FabricationPart fp = (FabricationPart)elems[i];
-
-                        IList<FabricationDimensionDefinition> dimObj = fp.GetDimensions();
-
-                        FabricationDimensionDefinition Dparam = dimObj.First(item => item.Name.ToString() == PParam);
-
-                        Parameter sharParam = elems[i].LookupParameter(sParam);
-
-                            switch (sharParam.StorageType)
+                        case "C1":
+                            value = FPartConnValue.FBConnectors(elems[i], doc, 0);
+                            if(value != "")
                             {
-                                case StorageType.Double:
-                                    double errorDouble;
-                                    if (double.TryParse(fp.GetDimensionValue(Dparam).ToString(), out errorDouble))
-                                    {
-                                            var v = double.Parse(fp.GetDimensionValue(Dparam).ToString());
-                                            sharParam.Set(v);
-                                    }
-                                    break;
-                                case StorageType.Integer:
-                                        int errorInt;
-                                        if (int.TryParse(fp.GetDimensionValue(Dparam).ToString(), out errorInt))
-                                        {
-                                            var v = int.Parse(fp.GetDimensionValue(Dparam).ToString());
-                                            ElementId id = new ElementId(v);
-                                            sharParam.Set(id);
-                                        }
-                                        break;
-                                case StorageType.String:
-                                        sharParam.Set(fp.GetDimensionValue(Dparam).ToString());
-                                        break;
+                                ParamAsign(sharParam, value);
+                                counter++;
+                            }
+                            break;
+                        case "C2":
+                            value = FPartConnValue.FBConnectors(elems[i], doc, 1);
+                            if (value != "")
+                            {
+                                ParamAsign(sharParam, value);
+                                counter++;
+                            }
+                            break;
+                        case "C3":
+                            value = FPartConnValue.FBConnectors(elems[i], doc, 2);
+                            if (value != "")
+                            {
+                                ParamAsign(sharParam, value);
+                                counter++;
+                            }
+                            break;
+                        case "C4":
+                            value = FPartConnValue.FBConnectors(elems[i], doc, 3);
+                            if (value != "")
+                            {
+                                ParamAsign(sharParam, value);
+                                counter++;
+                            }
+                            break;
 
-                                    default:
-                                        break;
-                                }
-                                counter++;          
-                    }
-                    catch
-                    {
+                        default:
+                            try
+                            {
+                                FabricationPart fp = (FabricationPart)elems[i];
 
+                                IList<FabricationDimensionDefinition> dimObj = fp.GetDimensions();
+
+                                FabricationDimensionDefinition Dparam = dimObj.First(item => item.Name.ToString() == PParam);
+
+                                value = fp.GetDimensionValue(Dparam).ToString();
+
+                                ParamAsign(sharParam, value);
+
+                                counter++;
+                            }
+                            catch
+                            {
+
+                            }
+                            break;
                     }
                 }
 
@@ -79,9 +100,34 @@ namespace FabParameters.Core
             }
         }
 
-        private static void ParamAsign()
+        private static void ParamAsign(Parameter sharParam, string value)
         {
+            switch (sharParam.StorageType)
+            {
+                case StorageType.Double:
+                    double errorDouble;
+                    if (double.TryParse(value, out errorDouble))
+                    {
+                        var v = double.Parse(value.ToString());
+                        sharParam.Set(v);
+                    }
+                    break;
+                case StorageType.Integer:
+                    int errorInt;
+                    if (int.TryParse(value.ToString(), out errorInt))
+                    {
+                        var v = int.Parse(value.ToString());
+                        ElementId id = new ElementId(v);
+                        sharParam.Set(id);
+                    }
+                    break;
+                case StorageType.String:
+                    sharParam.Set(value.ToString());
+                    break;
 
+                default:
+                    break;
+            }
         }
     }
 }

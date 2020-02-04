@@ -44,9 +44,9 @@ namespace FabParameters
             if(fPList.Count != 0)
             { 
 
-            PParamComboBox.ItemsSource = ParamValue.FBDimensions(fPList);
+            PParamComboBox.ItemsSource = GetAllFabParam.AllParams(fPList, doc);
 
-                SParamComboBox.ItemsSource = ElemSharedParameters.ElmSharedParam(fPList);
+                SParamComboBox.ItemsSource = ViewSharedParameters.ElmSharedParam(fPList);
             }
         }
 
