@@ -6,8 +6,8 @@ using FabParameters.Model;
 using FabParameters.Core;
 using System.Collections.Generic;
 using System.Windows.Controls;
-using System.Windows.Media;
 using System.Linq;
+using System.Windows.Media;
 
 namespace FabParameters
 {
@@ -41,11 +41,13 @@ namespace FabParameters
 
             fPList = ViewFPElm.ViewFabParts(doc, doc.ActiveView.Id);
 
-            
+            if(fPList.Count != 0)
+            { 
 
             PParamComboBox.ItemsSource = ParamValue.FBDimensions(fPList);
 
-            SParamComboBox.ItemsSource = ElemSharedParameters.ElmSharedParam(fPList); ;
+                SParamComboBox.ItemsSource = ElemSharedParameters.ElmSharedParam(fPList);
+            }
         }
 
 
@@ -66,9 +68,7 @@ namespace FabParameters
         private void Border_MouseDown(object sender, MouseButtonEventArgs e)
 
         {
-
             this.DragMove();
-
         }
 
         /// <summary>
@@ -87,12 +87,19 @@ namespace FabParameters
             System.Diagnostics.Process.Start("https://google.com");
         }
 
-        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void ComboBox1_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-   
-
+            IEnumerable<System.Windows.Controls.TextBox> TextboxList= FindVisualChildren<System.Windows.Controls.TextBox>(this);
+            System.Windows.Controls.TextBox tBox = TextboxList.First();
+            tBox.Foreground = new SolidColorBrush(Colors.Black);
         }
 
+        private void ComboBox2_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            IEnumerable<System.Windows.Controls.TextBox> TextboxList = FindVisualChildren<System.Windows.Controls.TextBox>(this);
+            System.Windows.Controls.TextBox tBox = TextboxList.Last();
+            tBox.Foreground = new SolidColorBrush(Colors.Black);
+        }
 
         private void Click_Button(object sender, RoutedEventArgs e)
         {
@@ -106,9 +113,31 @@ namespace FabParameters
                 SetParamByName.SetParam(doc, fPList, PParamComboBox.Text, SParamComboBox.Text);
             }
         }
+
+
+        public static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
+        {
+            if (depObj != null)
+            {
+                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+                {
+                    DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
+                    if (child != null && child is T)
+                    {
+                        yield return (T)child;
+                    }
+
+                    foreach (T childOfChild in FindVisualChildren<T>(child))
+                    {
+                        yield return childOfChild;
+                    }
+                }
+            }
+        }
+
     }
 
-    
 
-    
+
+
 }

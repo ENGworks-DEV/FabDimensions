@@ -25,10 +25,10 @@
             <Button Name="button" Style="{DynamicResource MainButtonStyle}" Content="Apply" HorizontalAlignment="Left" Margin="145,210,0,0" VerticalAlignment="Top" Width="72" Tag="" Click="Click_Button" Height="30" />
 
             <!--1 Select Parameter 01-->
-            <ComboBox Text="1. Select input parameter" ItemContainerStyle="{DynamicResource ComboItemStyle}"  Name="PParamComboBox" IsEditable="True" IsReadOnly="True" Margin="11,0,0,128" FontFamily="Roboto" FontSize="14px" VerticalAlignment="Bottom" Height="27" Padding="10 4 0 0" HorizontalAlignment="Left" Width="207" SelectionChanged="ComboBox_SelectionChanged">
+            <ComboBox Text="1. Select input parameter" ItemContainerStyle="{DynamicResource ComboItemStyle}"  Name="PParamComboBox" IsEditable="True" IsReadOnly="True" Margin="11,0,0,128" FontFamily="Roboto" FontSize="14px" VerticalAlignment="Bottom" Height="27" Padding="10 4 0 0" HorizontalAlignment="Left" Width="207" SelectionChanged="ComboBox1_SelectionChanged">
             </ComboBox>
 
-            <ComboBox Text="2. Select output parameter" ItemContainerStyle="{DynamicResource ComboItemStyle}"  x:Name="SParamComboBox" IsEditable="True" IsReadOnly="True" Margin="11,0,0,71" FontFamily="Roboto" FontSize="14px" VerticalAlignment="Bottom"  Height="27" Padding="10 4 0 0" HorizontalAlignment="Left" Width="207" />
+            <ComboBox Text="2. Select output parameter" ItemContainerStyle="{DynamicResource ComboItemStyle}"  x:Name="SParamComboBox" IsEditable="True" IsReadOnly="True" Margin="11,0,0,71" FontFamily="Roboto" FontSize="14px" VerticalAlignment="Bottom"  Height="27" Padding="10 4 0 0" HorizontalAlignment="Left" Width="207" SelectionChanged="ComboBox2_SelectionChanged" />
 
 
 

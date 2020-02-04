@@ -13,20 +13,19 @@ namespace FabParameters.Core
         public static void SetParam(Document doc, List<Element> elems, string PParam, string sParam)
         {
 
-            //ParameterSet elemParams = elems[0].Parameters;
-
-            //GlobalParameter sParameter;
-
-            //foreach (Parameter i in elemParams)
-            //{
-            //    if (i.Definition.Name.ToString() == sParam)
-            //    {
-            //        sParameter = doc.GetElement(i.Id) as GlobalParameter;
-            //    }
-            //}
             int ctSucess = 0;
+            ParamFind(ref ctSucess, doc, elems, PParam, sParam);
 
-            using (Autodesk.Revit.DB.Transaction AssingParamNumber = new Autodesk.Revit.DB.Transaction(doc, "Assing Part Number"))
+            TaskDialog.Show("succesful", ctSucess.ToString()
+                + " Elements where succesfully overwritten");
+        }
+
+
+        private static void ParamFind(ref int counter, Document doc, 
+            List<Element> elems, string PParam, string sParam)
+        {
+            using (Autodesk.Revit.DB.Transaction AssingParamNumber = 
+                new Autodesk.Revit.DB.Transaction(doc, "Assing Part Number"))
             {
                 AssingParamNumber.Start();
 
@@ -38,14 +37,37 @@ namespace FabParameters.Core
 
                         IList<FabricationDimensionDefinition> dimObj = fp.GetDimensions();
 
-                        foreach (FabricationDimensionDefinition x in dimObj)
-                        {
-                            if (x.Name.ToString() == PParam)
+                        FabricationDimensionDefinition Dparam = dimObj.First(item => item.Name.ToString() == PParam);
+
+                        Parameter sharParam = elems[i].LookupParameter(sParam);
+
+                            switch (sharParam.StorageType)
                             {
-                                elems[i].LookupParameter(sParam).Set(fp.GetDimensionValue(x).ToString());
-                                ctSucess++;
-                            }
-                        }
+                                case StorageType.Double:
+                                    double errorDouble;
+                                    if (double.TryParse(fp.GetDimensionValue(Dparam).ToString(), out errorDouble))
+                                    {
+                                            var v = double.Parse(fp.GetDimensionValue(Dparam).ToString());
+                                            sharParam.Set(v);
+                                    }
+                                    break;
+                                case StorageType.Integer:
+                                        int errorInt;
+                                        if (int.TryParse(fp.GetDimensionValue(Dparam).ToString(), out errorInt))
+                                        {
+                                            var v = int.Parse(fp.GetDimensionValue(Dparam).ToString());
+                                            ElementId id = new ElementId(v);
+                                            sharParam.Set(id);
+                                        }
+                                        break;
+                                case StorageType.String:
+                                        sharParam.Set(fp.GetDimensionValue(Dparam).ToString());
+                                        break;
+
+                                    default:
+                                        break;
+                                }
+                                counter++;          
                     }
                     catch
                     {
@@ -54,11 +76,12 @@ namespace FabParameters.Core
                 }
 
                 AssingParamNumber.Commit();
-
-                TaskDialog.Show("succesful", ctSucess.ToString() + " Elements where succesfully overwritten");
-
             }
         }
 
+        private static void ParamAsign()
+        {
+
+        }
     }
 }
